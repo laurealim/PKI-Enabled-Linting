@@ -4,14 +4,7 @@ from cryptography.hazmat.primitives import hashes
 from datetime import datetime, timezone
 
 def check_certificate_validity(cert_path):
-    """
-    Performs basic validity and linting-like checks on a digital certificate.
-    This function verifies the certificate's structure, temporal validity,
-    and checks for common extensions relevant to CA certificates.
-    It does NOT perform full chain validation against a trusted root store
-    or real-time revocation checks (CRL/OCSP), as these require
-    more complex infrastructure and network access.
-    """
+   
     try:
         # 1. Load the certificate from the file
         with open(cert_path, "rb") as f:
