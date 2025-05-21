@@ -56,55 +56,55 @@ def check_certificate_validity(cert_path):
         try:
             basic_constraints = cert.extensions.get_extension_for_class(x509.BasicConstraints)
             if basic_constraints.value.ca:
-                print(f"  [PASS] Basic Constraints: This is a CA certificate (CA=True).")
-                print(f"    Path Length Constraint: {basic_constraints.value.path_length}")
+                print(f"[PASS] Basic Constraints: This is a CA certificate (CA=True).")
+                print(f"Path Length Constraint: {basic_constraints.value.path_length}")
             else:
-                print("  [FAIL] Basic Constraints: This is an End-Entity certificate (CA=False).")
+                print("[FAIL] Basic Constraints: This is an End-Entity certificate (CA=False).")
         except x509.ExtensionNotFound:
-            print("  [INFO] Basic Constraints extension not found (might be implied for root CAs or an issue for intermediate CAs).")
+            print("[INFO] Basic Constraints extension not found (might be implied for root CAs or an issue for intermediate CAs).")
         except Exception as e:
-            print(f"  [ERROR] Problem with Basic Constraints: {e}")
+            print(f"[ERROR] Problem with Basic Constraints: {e}")
 
         # Key Usage (What can this key be used for?)
         try:
             key_usage = cert.extensions.get_extension_for_class(x509.KeyUsage)
-            print(f"  Key Usage: {key_usage.value}")
+            print(f"Key Usage: {key_usage.value}")
             if key_usage.value.key_cert_sign:
-                print("    [PASS] Key Certificate Signing is enabled (expected for a CA).")
+                print("[PASS] Key Certificate Signing is enabled (expected for a CA).")
             else:
-                print("    [WARNING] Key Certificate Signing is NOT enabled (unexpected for a CA).")
+                print("[WARNING] Key Certificate Signing is NOT enabled (unexpected for a CA).")
             if key_usage.value.crl_sign:
-                print("    [PASS] CRL Signing is enabled (expected for a CA).")
+                print("[PASS] CRL Signing is enabled (expected for a CA).")
             else:
-                print("    [WARNING] CRL Signing is NOT enabled (unexpected for a CA).")
+                print("[WARNING] CRL Signing is NOT enabled (unexpected for a CA).")
         except x509.ExtensionNotFound:
-            print("  [INFO] Key Usage extension not found.")
+            print("[INFO] Key Usage extension not found.")
         except Exception as e:
-            print(f"  [ERROR] Problem with Key Usage: {e}")
+            print(f"[ERROR] Problem with Key Usage: {e}")
 
         # Subject Key Identifier (Should be present)
         try:
             ski = cert.extensions.get_extension_for_class(x509.SubjectKeyIdentifier)
-            print(f"  [PASS] Subject Key Identifier (SKI) found: {ski.value.digest.hex()}")
+            print(f"[PASS] Subject Key Identifier (SKI) found: {ski.value.digest.hex()}")
         except x509.ExtensionNotFound:
-            print("  [WARNING] Subject Key Identifier (SKI) extension not found.")
+            print("[WARNING] Subject Key Identifier (SKI) extension not found.")
         except Exception as e:
-            print(f"  [ERROR] Problem with Subject Key Identifier: {e}")
+            print(f"[ERROR] Problem with Subject Key Identifier: {e}")
 
         # Authority Key Identifier (Should be present and match Issuer's SKI)
         try:
             aki = cert.extensions.get_extension_for_class(x509.AuthorityKeyIdentifier)
-            print(f"  [PASS] Authority Key Identifier (AKI) found.")
+            print(f"[PASS] Authority Key Identifier (AKI) found.")
             if aki.value.key_identifier:
-                print(f"    Key Identifier: {aki.value.key_identifier.hex()}")
+                print(f"Key Identifier: {aki.value.key_identifier.hex()}")
             if aki.value.authority_cert_issuer:
-                print(f"    Authority Cert Issuer: {aki.value.authority_cert_issuer}")
+                print(f"Authority Cert Issuer: {aki.value.authority_cert_issuer}")
             if aki.value.authority_cert_serial_number:
-                print(f"    Authority Cert Serial: {aki.value.authority_cert_serial_number}")
+                print(f"Authority Cert Serial: {aki.value.authority_cert_serial_number}")
         except x509.ExtensionNotFound:
-            print("  [INFO] Authority Key Identifier (AKI) extension not found (common for self-signed root CAs).")
+            print("[INFO] Authority Key Identifier (AKI) extension not found (common for self-signed root CAs).")
         except Exception as e:
-            print(f"  [ERROR] Problem with Authority Key Identifier: {e}")
+            print(f"[ERROR] Problem with Authority Key Identifier: {e}")
 
         # CRL Distribution Points (Where to find CRLs)
         try:
@@ -113,15 +113,11 @@ def check_certificate_validity(cert_path):
             for dist_point in crl_dist_points.value:
                 if dist_point.full_name:
                     for full_name in dist_point.full_name:
-                        print(f"  [INFO] CRL URL: {full_name.value}")
+                        print(f"[INFO] CRL URL: {full_name.value}")
         except x509.ExtensionNotFound:
-            print("  [INFO] CRL Distribution Points extension not found.")
+            print("[INFO] CRL Distribution Points extension not found.")
         except Exception as e:
-            print(f"  [ERROR] Problem with CRL Distribution Points: {e}")
-
-        print("\n--- Basic Linting/Validation Summary ---")
-        print("Certificate successfully parsed and basic structural/temporal checks performed.")
-        print("For full RFC/CA/Browser Forum compliance 'linting' and complete chain validation (including real-time revocation checks against a trusted root store), more specialized tools or complex logic are required.")
+            print(f"[ERROR] Problem with CRL Distribution Points: {e}")
 
     except FileNotFoundError:
         print(f"Error: Certificate file not found at '{cert_path}'. Please ensure the file is in the same directory.")
@@ -130,9 +126,7 @@ def check_certificate_validity(cert_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-# --- How to use the code ---
 if __name__ == "__main__":
-    # Specify the path to your certificate file
     certificate_file_path = "Root_CA_Bangladesh_2020.cer"
 
     print(f"Attempting to perform basic linting/validation on: {certificate_file_path}")
